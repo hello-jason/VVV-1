@@ -11,8 +11,8 @@ Vagrant.configure("2") do |config|
 
   # Configurations from 1.0.x can be placed in Vagrant 1.1.x specs like the following.
   config.vm.provider :virtualbox do |v|
-    v.customize ["modifyvm", :id, "--memory", 1024]
-    v.customize ["modifyvm", :id, "--cpus", 1]
+    v.customize ["modifyvm", :id, "--memory", 4096]
+    v.customize ["modifyvm", :id, "--cpus", 4]
     v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
     v.customize ["modifyvm", :id, "--natdnsproxy1", "on"]
 
@@ -25,20 +25,20 @@ Vagrant.configure("2") do |config|
   config.vm.provider :parallels do |v|
     v.update_guest_tools = true
     v.customize ["set", :id, "--longer-battery-life", "off"]
-    v.memory = 1024
-    v.cpus = 1
+    v.memory = 4096
+    v.cpus = 4
   end
 
   # Configuration options for the VMware Fusion provider.
   config.vm.provider :vmware_fusion do |v|
-    v.vmx["memsize"] = "1024"
-    v.vmx["numvcpus"] = "1"
+    v.vmx["memsize"] = "4096"
+    v.vmx["numvcpus"] = "4"
   end
 
   # Configuration options for Hyper-V provider.
   config.vm.provider :hyperv do |v, override|
-    v.memory = 1024
-    v.cpus = 1
+    v.memory = 4096
+    v.cpus = 4
   end
 
   # SSH Agent Forwarding
@@ -74,7 +74,7 @@ Vagrant.configure("2") do |config|
     override.vm.box = "ericmann/trusty64"
   end
 
-  config.vm.hostname = "vvv"
+  config.vm.hostname = "ocarina"
 
   # Local Machine Hosts
   #

@@ -25,7 +25,7 @@ apt_package_install_list=()
 # status before adding them to the apt_package_install_list array.
 apt_package_check_list=(
 
-  # PHP5
+  # PHP7
   #
   # Our base packages for php7.0. As long as php7.0-fpm and php7.0-cli are
   # installed, there is no need to install the general php7.0 package, which
@@ -60,7 +60,6 @@ apt_package_check_list=(
   # other packages that come in handy
   imagemagick
   subversion
-  git-core
   zip
   unzip
   ngrep
@@ -69,6 +68,7 @@ apt_package_check_list=(
   vim
   colordiff
   postfix
+  htop
 
   # ntp service to keep clock current
   ntp
@@ -244,12 +244,59 @@ package_install() {
   fi
 }
 
+ruby_dev_tools() {
+  apt-get -y install ruby-dev
+  apt-get clean
+}
+
+install_latest_git() {
+  # apt-get does not have latest git
+  # use ppa repo instead
+  apt-get install -y python-software-properties software-properties-common
+  add-apt-repository -y ppa:git-core/ppa
+  apt-get update
+  apt-get -y install git
+}
+
 tools_install() {
   # npm
   #
   # Make sure we have the latest npm version and the update checker module
-  npm install -g npm
-  npm install -g npm-check-updates
+  noroot npm install -g npm
+  noroot npm install -g npm-check-updates
+  #
+  # Install other node packages
+  if [[ "$(http-server --version)" ]]; then
+    echo "Updating http-server"
+    npm update -g http-server &>/dev/null
+  else
+    echo "Installing http-server"
+    npm install -g http-server &>/dev/null
+  fi
+
+  if [[ "$(ngrok --version)" ]]; then
+    echo "Updating ngrok"
+    npm update -g ngrok &>/dev/null
+  else
+    echo "Installing ngrok"
+    npm install -g ngrok &>/dev/null
+  fi
+
+  if [[ "$(bower --version)" ]]; then
+    echo "Updating Bower"
+    npm update -g bower &>/dev/null
+  else
+    echo "Installing Bower"
+    npm install -g bower &>/dev/null
+  fi
+
+  if [[ "$(gulp --version)" ]]; then
+    echo "Updating Gulp"
+    npm update -g gulp &>/dev/null
+  else
+    echo "Installing Gulp"
+    npm install -g gulp &>/dev/null
+  fi
 
   # Xdebug
   #
@@ -825,9 +872,11 @@ network_check
 echo " "
 echo "Main packages check and install."
 package_install
+install_latest_git
 tools_install
 nginx_setup
 mailcatcher_setup
+ruby_dev_tools
 phpfpm_setup
 services_restart
 mysql_setup
